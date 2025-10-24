@@ -1,0 +1,204 @@
+<div class="result-container">
+  <!-- Header -->
+  <header class="result-header">
+    <div class="logo">
+      <img src="assets/img/logo.png" alt="logo" class="logo-img" />
+      <img src="assets/img/VN-2-1024x512.png" alt="company-name" class="company-img" />
+    </div>
+    <nav class="nav-menu">
+      <a href="#" class="nav-link">Khoá học của tôi</a>
+      <a href="#" class="nav-link">Chương trình học</a>
+      <a href="#" class="nav-link">Đề thi online</a>
+      <a href="#" class="nav-link">Flashcards</a>
+      <a href="#" class="nav-link">Blog</a>
+    </nav>
+    <div class="user-profile">
+      <div class="profile-icon">👤</div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="result-content">
+    <div class="result-card">
+      <!-- Alert Messages -->
+      <div class="alert alert-warning">
+        <span class="alert-icon">⚠️</span>
+        Bạn chưa tạo mục tiêu cho quá trình luyện thi của mình. 
+        <a href="#" class="alert-link">Tạo ngay</a>.
+      </div>
+
+      <div class="alert alert-info">
+        <span class="alert-icon">💡</span>
+        Chú ý: Bạn có thể 
+        <a href="#" class="alert-link">tạo flashcards từ highlights</a> 
+        (bao gồm các highlights các bạn đã tạo trước đây) trong trang chi tiết kết quả bài thi. 
+        <a href="#" class="alert-link">Xem hướng dẫn</a>.
+      </div>
+
+      <!-- Title and Actions -->
+      <div class="result-title-section">
+        <h1 class="result-title">Kết quả thi: {{ testTitle() }}</h1>
+        <div class="action-buttons">
+          <button class="btn btn-primary" (click)="viewAnswer(0)">Xem đáp án</button>
+          <button class="btn btn-secondary">Quay về trang đề thi</button>
+        </div>
+      </div>
+
+      <!-- Statistics -->
+      <div class="statistics">
+        <div class="stat-item">
+          <div class="stat-icon">✓</div>
+          <div class="stat-content">
+            <div class="stat-label">Kết quả làm bài</div>
+            <div class="stat-value">{{ correctAnswers() }}/{{ totalQuestions() }}</div>
+          </div>
+        </div>
+
+        <div class="stat-item">
+          <div class="stat-icon">✓</div>
+          <div class="stat-content">
+            <div class="stat-label">Trả lời đúng</div>
+            <div class="stat-value green">{{ correctAnswers() }}<br>câu hỏi</div>
+          </div>
+        </div>
+
+        <div class="stat-item">
+          <div class="stat-icon">✗</div>
+          <div class="stat-content">
+            <div class="stat-label">Trả lời sai</div>
+            <div class="stat-value red">{{ wrongAnswers() }}<br>câu hỏi</div>
+          </div>
+        </div>
+
+        <div class="stat-item">
+          <div class="stat-icon">○</div>
+          <div class="stat-content">
+            <div class="stat-label">Bỏ qua</div>
+            <div class="stat-value gray">{{ skippedAnswers() }}<br>câu hỏi</div>
+          </div>
+        </div>
+
+        <div class="stat-item">
+          <div class="stat-icon">%</div>
+          <div class="stat-content">
+            <div class="stat-label">Độ chính xác (#đúng/#tổng)</div>
+            <div class="stat-value">{{ accuracy() }}%</div>
+          </div>
+        </div>
+
+        <div class="stat-item">
+          <div class="stat-icon">🕐</div>
+          <div class="stat-content">
+            <div class="stat-label">Thời gian hoàn thành</div>
+            <div class="stat-value">{{ timeSpent() }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tips Section -->
+      <div class="tips-section">
+        <div class="tips-header">
+          <span class="tips-icon">💡</span>
+          <span class="tips-title">Đáp án</span>
+        </div>
+        <div class="tips-actions">
+          <button class="btn-tip">Xem chi tiết đáp án</button>
+          <button class="btn-tip">Làm lại các câu sai</button>
+          <button class="btn-tip">
+            <em>Chú ý: Khi làm lại các câu sai, điểm trung bình của bạn sẽ KHÔNG BỊ ẢNH HƯỞNG.</em>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tips Alert -->
+      <div class="alert alert-light">
+        <span class="alert-icon">☀️</span>
+        <strong>Tips:</strong> Khi xem chi tiết đáp án, bạn có thể tạo và lưu highlight từ vựng, keywords và tạo note để học và tra cứu khi cần thiểu lại trong tương lai.
+      </div>
+
+      <!-- Question Details -->
+      <div class="question-details-section">
+        <h2 class="section-title">Phân tích chi tiết</h2>
+
+        <!-- Tabs -->
+        <div class="tabs">
+          <button 
+            class="tab-btn"
+            [class.active]="activeTab() === 'question-8'"
+            (click)="setActiveTab('question-8')">
+            Question 8
+          </button>
+          <button 
+            class="tab-btn"
+            [class.active]="activeTab() === 'questions-1-5'"
+            (click)="setActiveTab('questions-1-5')">
+            Questions 1-5
+          </button>
+          <button 
+            class="tab-btn"
+            [class.active]="activeTab() === 'questions-6-7'"
+            (click)="setActiveTab('questions-6-7')">
+            Questions 6-7
+          </button>
+          <button 
+            class="tab-btn"
+            [class.active]="activeTab() === 'summary'"
+            (click)="setActiveTab('summary')">
+            Tổng quát
+          </button>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="tab-content">
+          <!-- Questions List -->
+          <div *ngIf="activeTab() !== 'summary'" class="questions-list">
+            <div class="question-list-header">
+              <div class="col-header" style="flex: 0 0 120px;">Phần loại câu hỏi</div>
+              <div class="col-header" style="flex: 1;">Số câu đúng</div>
+              <div class="col-header" style="flex: 1;">Số câu sai</div>
+              <div class="col-header" style="flex: 1;">Số câu bỏ qua</div>
+              <div class="col-header" style="flex: 1;">Độ chính xác</div>
+              <div class="col-header" style="flex: 1;">Danh sách câu hỏi</div>
+            </div>
+
+            <div *ngFor="let question of getQuestionsByGroup(activeTab())" class="question-row">
+              <div class="question-number">{{ question.questionId }}</div>
+              <div class="question-answer">
+                <span *ngIf="question.isCorrect" class="answer-status correct">✓</span>
+                <span *ngIf="!question.isCorrect" class="answer-status skipped">○</span>
+                <span class="answer-text">{{ question.userAnswer || 'Không có câu trả lời' }}</span>
+                <button class="btn-detail" (click)="viewAnswer(question.questionId)">[Chi tiết]</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Summary Tab -->
+          <div *ngIf="activeTab() === 'summary'" class="summary-tab">
+            <p>Xem tổng quan về kết quả bài thi của bạn</p>
+            <div class="summary-stats">
+                <div class="summary-item">
+                  <strong>Questions 1-5:</strong> {{ countCorrectInGroup('questions-1-5') }}/5 đúng
+                </div>
+                <div class="summary-item">
+                  <strong>Questions 6-7:</strong> {{ countCorrectInGroup('questions-6-7') }}/2 đúng
+                </div>
+                <div class="summary-item">
+                  <strong>Question 8:</strong> {{ countCorrectInGroup('question-8') }}/1 đúng
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comments Section -->
+      <div class="comments-section">
+        <h3 class="comments-title">Bình luận</h3>
+        <textarea 
+          class="comment-input" 
+          placeholder="Chia sẻ cảm nghĩ của bạn ...">
+        </textarea>
+        <button class="btn btn-primary">Gửi</button>
+      </div>
+    </div>
+  </div>
+</div>

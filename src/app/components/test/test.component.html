@@ -1,0 +1,184 @@
+<div class="test-container">
+  <!-- Header -->
+  <header class="test-header">
+    <div class="logo">
+      <img src="assets/img/logo.png" alt="logo" class="logo-img" />
+      <img src="assets/img/VN-2-1024x512.png" alt="company-name" class="company-img" />
+    </div>
+    <nav class="nav-menu">
+      <a href="#" class="nav-link">Khoá học của tôi</a>
+      <a href="#" class="nav-link">Chương trình học</a>
+      <a href="#" class="nav-link">Đề thi online</a>
+      <a href="#" class="nav-link">Flashcards</a>
+      <a href="#" class="nav-link">Blog</a>
+    </nav>
+    <div class="user-profile">
+      <div class="profile-icon">👤</div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="test-content">
+    <!-- Left Panel: Question Display -->
+    <div class="question-panel">
+      <div class="test-title">
+        <h1>TOEIC SW Writing Test 1</h1>
+        <button class="exit-btn">Thoát</button>
+      </div>
+
+      <div class="question-tabs">
+        <button 
+          class="tab-btn"
+          [class.active]="getCurrentQuestionIndex() >= 0 && getCurrentQuestionIndex() <= 4"
+          (click)="navigateToQuestion(0)">
+          Questions 1-5
+        </button>
+        <button 
+          class="tab-btn"
+          [class.active]="getCurrentQuestionIndex() >= 5 && getCurrentQuestionIndex() <= 6"
+          (click)="navigateToQuestion(5)">
+          Questions 6-7
+        </button>
+        <button 
+          class="tab-btn"
+          [class.active]="getCurrentQuestionIndex() === 7"
+          (click)="navigateToQuestion(7)">
+          Question 8
+        </button>
+      </div>
+
+      <div class="question-content">
+        <!-- Write Sentence Questions (1-5) - Show only current question -->
+        <div *ngIf="getCurrentQuestionIndex() >= 0 && getCurrentQuestionIndex() <= 4 && currentQuestion()" class="questions-group-container">
+          <div class="question-write-sentence">
+            <div class="question-header">
+              <h3>{{ currentQuestion()!.title }}</h3>
+              <span class="question-number">{{ currentQuestion()!.id }}</span>
+              <button class="add-note-btn">Thêm ghi chú / dán ý</button>
+            </div>
+            
+            <!-- Single-column layout: image only here, answer moved below and full width -->
+            <div>
+              <div class="question-image-column" *ngIf="currentQuestion()!.imageUrl">
+                <img [src]="currentQuestion()!.imageUrl" [alt]="'Question ' + currentQuestion()!.id" />
+                <div class="image-caption">{{ currentQuestion()!.prompt }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Respond to Email Questions (6-7) - Show only current question -->
+        <div *ngIf="getCurrentQuestionIndex() >= 5 && getCurrentQuestionIndex() <= 6 && currentQuestion()" class="questions-group-container">
+          <div class="question-email">
+            <div class="question-header">
+              <h3>{{ currentQuestion()!.title }}</h3>
+              <span class="question-number">{{ currentQuestion()!.id }}</span>
+              <button class="add-note-btn">Thêm ghi chú / dán ý</button>
+            </div>
+
+            <!-- Email content shown here; answer moved below for full width -->
+            <div>
+              <div class="email-container">
+                <div class="email-field"><strong>From:</strong> {{ currentQuestion()!.emailFrom }}</div>
+                <div class="email-field"><strong>To:</strong> {{ currentQuestion()!.emailTo }}</div>
+                <div class="email-field"><strong>Subject:</strong> {{ currentQuestion()!.emailSubject }}</div>
+                <div class="email-field"><strong>Sent:</strong> {{ currentQuestion()!.emailDate }}</div>
+                <div class="email-body">
+                  <pre>{{ currentQuestion()!.emailBody }}</pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Essay Question (8) -->
+        <div *ngIf="getCurrentQuestionIndex() === 7 && currentQuestion()" class="question-essay">
+          <div class="question-header">
+            <h3>{{ currentQuestion()!.title }}</h3>
+            <span class="question-number">{{ currentQuestion()!.id }}</span>
+            <button class="add-note-btn">Thêm ghi chú / dán ý</button>
+          </div>
+
+          <div class="essay-prompt">
+            <p>{{ currentQuestion()!.prompt }}</p>
+          </div>
+          
+          <div class="essay-directions" *ngIf="currentQuestion()!.directions">
+            <p>{{ currentQuestion()!.directions }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Panel: Answer Area & Navigation -->
+    <div class="answer-panel">
+      <div class="timer-section">
+        <div class="timer">
+          <span class="timer-label">Thời gian còn lại:</span>
+          <span class="timer-value">{{ formatTime(remainingTime()) }}</span>
+        </div>
+        <button class="submit-btn" (click)="submitTest()">NỘP BÀI</button>
+      </div>
+
+      <!-- Answer Input Section for all questions -->
+      <div class="answer-input-section">
+        <label class="answer-label">Viết câu trả lời của bạn:</label>
+        <textarea 
+          class="answer-textarea"
+          [value]="currentAnswer()"
+          (input)="onAnswerChange($any($event.target).value)"
+        ></textarea>
+        <div class="word-count">Word count: {{ wordCount() }}</div>
+        <button class="next-btn" *ngIf="getCurrentQuestionIndex() < 7" (click)="navigateToQuestion(getCurrentQuestionIndex() + 1)">Next</button>
+      </div>
+
+      <div class="navigation-section">
+        <div class="question-groups">
+          <div class="question-group">
+            <h4>Questions 1-5</h4>
+            <div class="question-numbers">
+              <button 
+                *ngFor="let idx of [0, 1, 2, 3, 4]"
+                class="question-num-btn"
+                [class.active]="getCurrentQuestionIndex() === idx"
+                [class.answered]="isQuestionAnswered(idx)"
+                (click)="navigateToQuestion(idx)">
+                {{ idx + 1 }}
+              </button>
+            </div>
+            <span class="review-icon">📌 Từ điển</span>
+          </div>
+
+          <div class="question-group">
+            <h4>Questions 6-7</h4>
+            <div class="question-numbers">
+              <button 
+                *ngFor="let idx of [5, 6]"
+                class="question-num-btn"
+                [class.active]="getCurrentQuestionIndex() === idx"
+                [class.answered]="isQuestionAnswered(idx)"
+                (click)="navigateToQuestion(idx)">
+                {{ idx + 1 }}
+              </button>
+            </div>
+            <span class="review-icon">💬</span>
+          </div>
+
+          <div class="question-group">
+            <h4>Question 8</h4>
+            <div class="question-numbers">
+              <button 
+                class="question-num-btn"
+                [class.active]="getCurrentQuestionIndex() === 7"
+                [class.answered]="isQuestionAnswered(7)"
+                (click)="navigateToQuestion(7)">
+                8
+              </button>
+            </div>
+            <span class="review-icon">📝</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
