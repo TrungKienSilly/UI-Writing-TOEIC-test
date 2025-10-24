@@ -1486,4 +1486,4 @@ MIT License - Copyright (c) 2025
 
 **Version**: 1.0.0  
 **Last Updated**: October 24, 2025  
-**Author**: Development Team
+**Author**: TrungKienSilly
